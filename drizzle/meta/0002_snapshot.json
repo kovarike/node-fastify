@@ -1,6 +1,6 @@
 {
-  "id": "d16fbe48-1ff1-442d-acf9-e3d19732369a",
-  "prevId": "9ef6155f-f3c9-41cd-9b62-6382934656c0",
+  "id": "3985af9b-a077-453b-8a82-d03fce6055ca",
+  "prevId": "d16fbe48-1ff1-442d-acf9-e3d19732369a",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -67,7 +67,7 @@
         },
         "enrolledAt": {
           "name": "enrolledAt",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"

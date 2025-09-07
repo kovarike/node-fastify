@@ -5,12 +5,15 @@
   "scripts": {
     "dev": "sudo docker compose up -d && npm run start:server",
     "start:server": "node --env-file .env --watch ./src/server.ts",
+    "db:seed": "node --env-file .env ./src/db/seed.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "test": "vitest run"
   },
   "type": "module",
   "dependencies": {
+    "@faker-js/faker": "^10.0.0",
     "@fastify/cors": "^11.1.0",
     "@fastify/helmet": "^13.0.1",
     "@fastify/rate-limit": "^10.3.0",
@@ -23,11 +26,15 @@
     "pg": "^8.16.3",
     "pino-pretty": "^13.1.1",
     "tsx": "^4.20.5",
+    "uuidv7": "^1.0.2",
     "zod": "^4.1.5"
   },
   "devDependencies": {
     "@types/node": "^24.3.1",
+    "@types/supertest": "^6.0.3",
     "drizzle-kit": "^0.31.4",
-    "typescript": "^5.9.2"
+    "supertest": "^7.1.4",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   }
 }

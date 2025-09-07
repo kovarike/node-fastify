@@ -1,11 +1,11 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
-import z from 'zod';
-import { eq } from 'drizzle-orm'
+import z, { promise } from 'zod';
+import { and, asc, count, eq, ilike, type SQL } from 'drizzle-orm'
 import { db } from '../db/client.ts';
-import { courses } from '../db/schema.ts';
+import { courses, enrollments } from '../db/schema.ts';
 
 export const coursesRoute: FastifyPluginAsyncZod = async (server) => {
-
+  //route to create a new course
   server.post('/courses', {
     schema: {
       tags: ['courses'],
@@ -34,26 +34,55 @@ export const coursesRoute: FastifyPluginAsyncZod = async (server) => {
     return reply.code(201).send({ courseID: result[0].id });
   })
 
+  //route to list all courses with optional search and ordering
   server.get('/courses', {
     schema: {
       tags: ['courses'],
       summary: 'List all courses',
       description: 'Retrieve a list of all available courses',
+      querystring: z.object({
+        search: z.string().optional().describe('Optional server identifier for filtering courses'),
+        orderBy: z.enum(['id', 'title']).optional().default('title').describe('Field to order the courses by, either title or creation date'),
+        page: z.coerce.number().optional().default(1).describe('Page number for pagination, starting from 1'),
+      }),
       response: {
         200: z.object({
           courses: z.array(z.object({
             id: z.uuid().describe('Unique identifier for the course'),
             title: z.string().describe('Title of the course'),
             description: z.string().nullable().describe('Description of the course, can be null'),
+            enrollments: z.number().describe('Number of enrollments in the course'),
           })),
+          total: z.number().describe('Total number of courses available'),
         }).describe('An array of course objects'),
       },
     }
   }, async (request, reply) => {
-    const result = await db.select().from(courses);
-    return reply.code(200).send({ courses: result });
+    const { search, orderBy, page} = request.query;
+
+    const conditions: SQL[] = []; 
+
+    if(search){
+      conditions.push(ilike(courses.title, `%${search}%`));
+    }
+
+    const [ result, totalCourses ] = await Promise.all([
+      db.select({
+        id: courses.id,
+        title: courses.title,
+        description: courses.description,
+        enrollments: count(enrollments.enrollmentId),
+      }).from(courses).leftJoin(enrollments, eq(enrollments.courseId, courses.id))
+      .where(and(...conditions)).orderBy(asc(courses[orderBy])).limit(5).offset((page - 1) * 2).groupBy(courses.id),
+
+      db.$count(courses, and(...conditions)),
+
+    ]);
+
+    return reply.code(200).send({ courses: result, total: totalCourses });
   })
 
+  //route to get a course by id
   server.get('/courses/:id', {
     schema: {
       tags: ['courses'],

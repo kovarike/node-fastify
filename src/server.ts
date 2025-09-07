@@ -222,9 +222,10 @@ server.setErrorHandler((error: any, request: FastifyRequest, reply: FastifyReply
   return reply.status(statusCode).type('application/json').send(base);
 });
 
+// Registra as rotas
 server.register(coursesRoute);
 
-server.listen({ port: 8080 }, (err, address) => {
+server.listen({ port: 8080, }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);

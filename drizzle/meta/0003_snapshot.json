@@ -1,6 +1,6 @@
 {
-  "id": "d16fbe48-1ff1-442d-acf9-e3d19732369a",
-  "prevId": "9ef6155f-f3c9-41cd-9b62-6382934656c0",
+  "id": "77562319-c622-4eb6-ba20-91d67c654d8e",
+  "prevId": "3985af9b-a077-453b-8a82-d03fce6055ca",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -67,7 +67,7 @@
         },
         "enrolledAt": {
           "name": "enrolledAt",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
@@ -79,7 +79,29 @@
           "notNull": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "enrollments_userId_courseId_index": {
+          "name": "enrollments_userId_courseId_index",
+          "columns": [
+            {
+              "expression": "userId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "courseId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "enrollments_userId_users_id_fk": {
           "name": "enrollments_userId_users_id_fk",

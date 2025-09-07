@@ -1,0 +1,118 @@
+# =========================================
+# SO / EDITOR (úteis em qualquer projeto)
+# =========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+__MACOSX/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.nfs*
+
+# IDEs
+.vscode/
+.idea/
+.history/
+*.code-workspace
+*.iml
+*.ipr
+*.iws
+
+# =========================================
+# NODE / JS / TS
+# =========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+
+# Arquivos temporários de empacotamento e cache
+*.tgz
+.cache/
+.parcel-cache/
+.turbo/
+.tmp/
+tmp/
+temp/
+
+# Artefatos de build (geral)
+dist/
+build/
+coverage/
+.nyc_output/
+
+# Frameworks / Bundlers comuns
+# Next.js
+.next/
+out/
+# Nuxt
+.nuxt/
+# Remix
+public/build/
+# Vite / Astro / SvelteKit
+.astro/
+.svelte-kit/
+
+# Hospedagens/CLI locais
+.vercel/
+.netlify/
+.serverless/
+.dynamodb/
+
+# Testes (Cypress / Playwright / outros)
+.cypress/
+cypress/videos/
+cypress/screenshots/
+.playwright/
+playwright-report/
+test-results/
+
+# =========================================
+# AMBIENTES / SEGREDOS
+# =========================================
+.env
+.env.*
+!.env.example          # mantenha apenas o exemplo versionado
+.envrc
+*.local
+secret.*
+secrets/
+keys/
+
+# =========================================
+# BANCO DE DADOS LOCAL / PRISMA
+# (não versionar bancos locais ou arquivos de journal)
+# =========================================
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.sqlite-journal
+*.sql
+*.dump
+prisma/*.db
+prisma/*.db-journal
+
+# =========================================
+# LOGS & DUMPS
+# =========================================
+logs/
+*.log
+*.pid
+*.pid.lock
+*.seed
+*.orig

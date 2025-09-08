@@ -152,7 +152,9 @@ Response:
 Listar Cursos (Público).
 
 Request: 
-```curl "http://localhost:8080/courses?page=1&orderBy=title" ```
+```bash
+curl "http://localhost:8080/courses?page=1&orderBy=title"
+```
 
 Response:
 ```json
@@ -175,7 +177,9 @@ Response:
 Buscar Cursos com Filtro (Público).
 
 Request: 
-```curl "http://localhost:8080/courses?search=typescript&page=1"```
+```bash 
+curl "http://localhost:8080/courses?search=typescript&page=1"
+```
 
 Response:
 ```json
@@ -198,7 +202,9 @@ Response:
 Obter Curso por ID (Público).
 
 Request: 
-```curl "http://localhost:8080/courses/a1b2c3d4-e5f6-7890-abcd-ef1234567890" ```
+```bash
+curl "http://localhost:8080/courses/a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+```
 
 Response:
 ```json

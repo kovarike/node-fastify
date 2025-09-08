@@ -148,17 +148,6 @@ Response:
 }
 ```
 
-Response:
-```json
-{
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "title": "TypeScript Avançado",
-  "description": "Curso completo de TypeScript",
-  "price": 199.90,
-  "created_at": "2024-01-20T14:30:00Z"
-}
-```
-
 ### GET /courses?page=1&orderBy=title
 Listar Cursos (Público).
 

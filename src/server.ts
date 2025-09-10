@@ -1,4 +1,5 @@
 import fastify, { type FastifyReply, type FastifyRequest } from 'fastify'
+import fastifyStatic from '@fastify/static';
 import cors from '@fastify/cors'
 import rateLimit from '@fastify/rate-limit'
 import helmet from '@fastify/helmet';
@@ -9,8 +10,14 @@ import { validatorCompiler, serializerCompiler, jsonSchemaTransform, type ZodTyp
 
 import crypto from 'crypto';
 
-import { coursesRoute } from './routers/couses-route.ts';
+import { coursesRoute } from './routers/couses-route';
 import { ZodError } from 'zod';
+
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const server = fastify({
   logger: {
@@ -220,6 +227,20 @@ server.setErrorHandler((error: any, request: FastifyRequest, reply: FastifyReply
 
   // Default
   return reply.status(statusCode).type('application/json').send(base);
+});
+
+await server.register(fastifyStatic, {
+  root: path.join(__dirname, 'public'),
+  prefix: '/', // serve files from the root of the server
+});
+
+// Rota para servir a página inicial, por exemplo
+server.get('/', async (request, reply) => {
+  return reply.sendFile('home.html'); // Envia o arquivo home.html
+});
+
+server.get('/login', async (request, reply) => {
+  return reply.sendFile('login.html'); // Envia o arquivo login.html
 });
 
 // Registra as rotas

@@ -1,6 +1,6 @@
 import { pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { uuidv7 as uuidTimestamp } from "uuidv7";
-import { generateEnrollmentNumber } from "../services/enrollments.ts";
+import { generateEnrollmentNumber } from "../services/enrollments";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().$defaultFn(() => uuidTimestamp()),

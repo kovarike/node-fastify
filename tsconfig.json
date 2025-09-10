@@ -1,15 +1,24 @@
 {
   "compilerOptions": {
-    "lib": ["ES2024"],
+    "lib": ["ES2024", "DOM"],
     "module": "nodenext",
     "target": "ES2024",
     "allowImportingTsExtensions": true,
     "noEmit": true,
+    "rootDir": "./src",
+    "outDir": "./src/bundle",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+
 
 
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "moduleResolution": "node16"
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "bundle", "**/*.test.ts"]
 }

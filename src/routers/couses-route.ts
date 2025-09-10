@@ -1,8 +1,8 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import z, { promise } from 'zod';
 import { and, asc, count, eq, ilike, type SQL } from 'drizzle-orm'
-import { db } from '../db/client.ts';
-import { courses, enrollments } from '../db/schema.ts';
+import { db } from '../db/client';
+import { courses, enrollments } from '../db/schema';
 
 export const coursesRoute: FastifyPluginAsyncZod = async (server) => {
   //route to create a new course

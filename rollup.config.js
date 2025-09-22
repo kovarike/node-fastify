@@ -21,7 +21,11 @@ inputFiles.forEach(file => {
 export default {
   input: inputEntries,
   output: {
+<<<<<<< HEAD
+    dir: 'bundle', // Pasta de saída
+=======
     dir: 'src/bundle', // Pasta de saída
+>>>>>>> main
     format: 'es',
     entryFileNames: '[name].mjs',
     chunkFileNames: '[name]-[hash].mjs',
@@ -76,6 +80,9 @@ export default {
     }
     warn(warning);
   }
+<<<<<<< HEAD
+};
+=======
 };
 
 // // rollup.config.js
@@ -115,3 +122,4 @@ export default {
 //     warn(warning);
 //   }
 // };
+>>>>>>> main

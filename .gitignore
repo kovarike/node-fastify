@@ -85,7 +85,6 @@ test-results/
 # AMBIENTES / SEGREDOS
 # =========================================
 .env
-.env.*
 !.env.example          # mantenha apenas o exemplo versionado
 .envrc
 *.local
@@ -116,3 +115,7 @@ logs/
 *.pid.lock
 *.seed
 *.orig
+
+bundle
+bundle/
+bundle/*

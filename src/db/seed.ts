@@ -1,5 +1,5 @@
-import { db } from './client';
-import { users, courses, enrollments } from './schema';
+import { db } from './client.ts';
+import { users, courses, enrollments } from './schema.ts';
 import { fakerPT_BR as faker } from '@faker-js/faker';
 
 export async function seed() {

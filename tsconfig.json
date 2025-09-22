@@ -6,7 +6,7 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "rootDir": "./src",
-    "outDir": "./src/bundle",
+    "outDir": "bundle",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
@@ -19,6 +19,6 @@
     "skipLibCheck": true,
     "moduleResolution": "node16"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "bundle"],
   "exclude": ["node_modules", "dist", "bundle", "**/*.test.ts"]
 }

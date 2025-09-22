@@ -21,7 +21,11 @@ inputFiles.forEach(file => {
 export default {
   input: inputEntries,
   output: {
+<<<<<<< HEAD
     dir: 'bundle', // Pasta de saída
+=======
+    dir: 'src/bundle', // Pasta de saída
+>>>>>>> main
     format: 'es',
     entryFileNames: '[name].mjs',
     chunkFileNames: '[name]-[hash].mjs',
@@ -76,4 +80,46 @@ export default {
     }
     warn(warning);
   }
+<<<<<<< HEAD
 };
+=======
+};
+
+// // rollup.config.js
+// import resolve from '@rollup/plugin-node-resolve';
+// import commonjs from '@rollup/plugin-commonjs';
+// import typescript from '@rollup/plugin-typescript';
+// import { glob } from 'glob';
+
+// // Para múltiplos arquivos de entrada, você precisa de uma configuração diferente
+// const inputFiles = glob.sync('src/**/*.ts');
+
+// export default {
+//   input: inputFiles, // Ponto de entrada principal
+//   output: {
+//     dir: 'src/bundle', // Pasta de saída
+//     format: 'es',
+//     sourcemap: true // Gera sourcemaps para debugging
+//   },
+//   plugins: [
+//     resolve({
+//       browser: true // Para resolver módulos do navegador
+//     }),
+//     commonjs(),
+//     typescript({
+//       tsconfig: './tsconfig.json' // Especifica o arquivo tsconfig
+//     })
+//   ],
+  
+//   // Opcional: evitar marcar módulos como externos
+//   external: [], 
+  
+//   // Avisar sobre módulos não encontrados
+//   onwarn: (warning, warn) => {
+//     if (warning.code === 'UNRESOLVED_IMPORT') {
+//       throw new Error(warning.message);
+//     }
+//     warn(warning);
+//   }
+// };
+>>>>>>> main

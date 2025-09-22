@@ -240,7 +240,11 @@ src/
 │   └── enrollment.ts    # Geração de números de matrícula
 └── server.ts            # Configuração do servidor Fastify
 <<<<<<< HEAD
+<<<<<<< HEAD
 ```
 =======
 ```
 >>>>>>> f2b615a (add static fun)
+=======
+```
+>>>>>>> main

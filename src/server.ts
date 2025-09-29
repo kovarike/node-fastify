@@ -1,19 +1,12 @@
-<<<<<<< HEAD
+
 import fastify, {type FastifyRequest, type FastifyReply} from 'fastify'
 import { validatorCompiler, serializerCompiler, type ZodTypeProvider } from 'fastify-type-provider-zod'
-=======
-import fastify, { type FastifyReply, type FastifyRequest } from 'fastify'
->>>>>>> main
-import fastifyStatic from '@fastify/static';
+
 import cors from '@fastify/cors'
 import helmet from '@fastify/helmet';
 
-import path from 'path';
-import { fileURLToPath } from 'url';
-
 import { env } from './services/env.ts';
 
-<<<<<<< HEAD
 import { coursesRouteDelete } from './routers/courses/courses-delete.ts';
 import { coursesRouteGet } from './routers/courses/courses-get.ts';
 import { coursesRoutePost } from './routers/courses/courses-post.ts';
@@ -43,19 +36,6 @@ declare module 'fastify' {
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
   }
 }
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-=======
-import { coursesRoute } from './routers/couses-route';
-import { ZodError } from 'zod';
->>>>>>> main
-
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const server = fastify({
   logger: {
@@ -98,24 +78,6 @@ server.register(helmet, { contentSecurityPolicy: false });
 server.setValidatorCompiler(validatorCompiler);
 server.setSerializerCompiler(serializerCompiler);
 
-await server.register(fastifyStatic, {
-  root: path.join(__dirname, 'public'),
-  prefix: '/',
-  index: false, // desabilita o index automático
-  decorateReply: false, // para evitar conflito de tipos com outros plugins
-  
-});
-
-// Rota para servir a página inicial, por exemplo
-server.get('/', async (request, reply) => {
-  return reply.sendFile('home.html'); // Envia o arquivo home.html
-});
-
-server.get('/login', async (request, reply) => {
-  return reply.sendFile('login.html'); // Envia o arquivo login.html
-});
-
-<<<<<<< HEAD
 server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyReply) => {
   try {
     await request.jwtVerify();
@@ -124,23 +86,8 @@ server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyRe
   }
 });
 
-await server.register(middleware);
-await server.register(errors);
-=======
-await server.register(fastifyStatic, {
-  root: path.join(__dirname, 'public'),
-  prefix: '/', // serve files from the root of the server
-});
-
-// Rota para servir a página inicial, por exemplo
-server.get('/', async (request, reply) => {
-  return reply.sendFile('home.html'); // Envia o arquivo home.html
-});
-
-server.get('/login', async (request, reply) => {
-  return reply.sendFile('login.html'); // Envia o arquivo login.html
-});
->>>>>>> main
+server.register(middleware);
+server.register(errors);
 
 // Registra as rotas
 server.register(coursesRouteDelete);

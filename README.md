@@ -261,3 +261,7 @@ sequenceDiagram
   API->>API: sign JWT
   API-->>Client: 200 OK + Set-Cookie / body { token }
 ```
+
+### Demo
+
+![Demonstração do app](/src/public/demo.gif)

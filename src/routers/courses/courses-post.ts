@@ -21,7 +21,8 @@ export const coursesRoutePost: FastifyPluginAsyncZod = async (server) => {
         department: z.string()
           .describe('Academic department offering the course'),
         workload: z.string()
-          .describe('Expected workload and hours required')
+          .describe('Expected workload and hours required'),
+        teachersId: z.uuid().describe('ID of the teacher creating the course')
       }).describe('Request body for creating a new course'),
       response: {
         201: z.object({
@@ -54,15 +55,8 @@ export const coursesRoutePost: FastifyPluginAsyncZod = async (server) => {
     // preValidation: [server.authenticate],
   }, async (request, reply) => {
     try {
-      // Verificar se o usuário tem permissão de instrutor
-      // if (checkUserRole(request.user.role)) {
-      //   return reply.code(403).send({
-      //     error: 'Forbidden',
-      //     message: 'Only instructors or admins can create courses'
-      //   });
-      // }
 
-      const { title, description, department, workload } = request.body;
+      const { title, description, department, workload, teachersId } = request.body;
 
       // Verificação de duplicidade
       const [existingCourse] = await db.select()
@@ -82,7 +76,7 @@ export const coursesRoutePost: FastifyPluginAsyncZod = async (server) => {
         description ,
         department,
         workload,
-        teachersId: request.user.id,
+        teachersId,
         updatedAt: new Date()
       }).returning();
 

@@ -5,7 +5,7 @@
   "scripts": {
     "deploy": "sudo docker compose up -d && node --env-file .env --watch ./src/server.ts && npm run db:generate && npm run db:migrate",
     "dev": "sudo docker compose up -d && npm run start:server",
-    "start:server": "node --env-file .env.example --watch ./src/server.ts",
+    "start:server": "node --env-file .env --watch ./src/server.ts",
     "db:seed": "node --env-file .env.example ./src/db/seed.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -37,14 +37,18 @@
     "zod": "^4.1.5"
   },
   "devDependencies": {
+    "@libsql/client": "^0.15.15",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^24.6.0",
     "@types/supertest": "^6.0.3",
     "@types/yargs": "^17.0.33",
+    "better-sqlite3": "^12.4.1",
     "chalk": "^5.6.2",
     "dotenv-cli": "^10.0.0",
     "drizzle-kit": "^0.31.4",
     "fast-glob": "^3.3.3",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
     "supertest": "^7.1.4",
     "ts-morph": "^27.0.0",
     "tslib": "^2.8.1",

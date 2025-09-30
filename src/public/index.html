@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Acadêmico - Completo</title>
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Framer Motion via CDN -->
+    <script src="https://unpkg.com/motion@latest/dist/motion.min.js"></script>
+
+    <!-- Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Toastify para notificações -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <style>
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid #3498db;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        /* Toast customizado */
+        .custom-toast {
+            background: white;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 16px;
+            border-left: 4px solid;
+            min-width: 300px;
+        }
+
+        .toast-success {
+            border-left-color: #10b981;
+        }
+
+        .toast-error {
+            border-left-color: #ef4444;
+        }
+
+        .toast-warning {
+            border-left-color: #f59e0b;
+        }
+
+        .toast-info {
+            border-left-color: #3b82f6;
+        }
+
+        .toast-icon {
+            margin-right: 12px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <div id="app" class="min-h-screen">
+        <!-- Tela de Login -->
+        <div id="login-screen" class="fade-in min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-lg">
+                <div>
+                    <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                        Sistema Acadêmico
+                    </h2>
+                    <p class="mt-2 text-center text-sm text-gray-600">
+                        Faça login em sua conta
+                    </p>
+                </div>
+                <form id="login-form" class="mt-8 space-y-6">
+                    <div class="rounded-md shadow-sm -space-y-px">
+                        <div>
+                            <label for="email" class="sr-only">Email</label>
+                            <input id="email" name="email" type="email" autocomplete="email" required
+                                class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                                placeholder="Email">
+                        </div>
+                        <div>
+                            <label for="password" class="sr-only">Senha</label>
+                            <input id="password" name="password" type="password" autocomplete="current-password"
+                                required
+                                class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                                placeholder="Senha">
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit" id="login-button"
+                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200">
+                            <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </span>
+                            Entrar
+                        </button>
+                    </div>
+
+                    <div id="login-error" class="hidden text-red-600 text-center text-sm mt-2"></div>
+
+                    <div id="login-loading" class="hidden">
+                        <div class="loader"></div>
+                        <p class="text-center mt-2 text-gray-600">Autenticando...</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="hidden">
+            <!-- Cabeçalho -->
+            <header class="bg-white shadow">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between h-16">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 flex items-center">
+                                <i class="fas fa-graduation-cap text-blue-600 text-2xl mr-2"></i>
+                                <h1 class="text-xl font-bold text-gray-900">Sistema Acadêmico</h1>
+                            </div>
+                            <nav class="hidden md:ml-6 md:flex space-x-4">
+                                <a href="#" class="px-3 py-2 rounded-md text-sm font-medium text-gray-900 bg-gray-100"
+                                    onclick="loadDashboardContent()">Dashboard</a>
+                                <a href="#" id="courses-nav"
+                                    class="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                                    onclick="loadCourses()">Cursos</a>
+                                <a href="#" id="classes-nav"
+                                    class="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                                    onclick="loadClasses()">Turmas</a>
+                                <a href="#" id="enrollments-nav"
+                                    class="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                                    onclick="loadEnrollments()">Matrículas</a>
+                                <a href="#" id="users-nav"
+                                    class="hidden px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                                    onclick="loadUsers()">Usuários</a>
+                                <a href="#" id="teachers-nav"
+                                    class="hidden px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                                    onclick="loadTeachers()">Professores</a>
+                            </nav>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center">
+                                    <span id="user-info" class="mr-4 text-sm text-gray-700"></span>
+                                    <button id="logout-button"
+                                        class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-200">
+                                        <i class="fas fa-sign-out-alt mr-1"></i> Sair
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Conteúdo principal -->
+            <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <div id="dashboard-content" class="px-4 py-6 sm:px-0">
+                    <!-- Conteúdo dinâmico -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal para formulários -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-title" class="text-lg font-bold"></h3>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modal-body">
+                <!-- Conteúdo do modal -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação customizado -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="confirm-title" class="text-lg font-bold">Confirmação</h3>
+                <button onclick="closeConfirmModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="confirm-body" class="mb-4">
+                <!-- Conteúdo da confirmação -->
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button id="confirm-cancel" onclick="closeConfirmModal()"
+                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md">Cancelar</button>
+                <button id="confirm-ok"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuração
+        const API_BASE_URL = 'http://localhost:3000';
+        let currentUser = null;
+        let authToken = null;
+
+        // Elementos DOM
+        const loginScreen = document.getElementById('login-screen');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('login-form');
+        const loginButton = document.getElementById('login-button');
+        const loginError = document.getElementById('login-error');
+        const loginLoading = document.getElementById('login-loading');
+        const logoutButton = document.getElementById('logout-button');
+        const userInfo = document.getElementById('user-info');
+        const dashboardContent = document.getElementById('dashboard-content');
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmTitle = document.getElementById('confirm-title');
+        const confirmBody = document.getElementById('confirm-body');
+        const confirmCancel = document.getElementById('confirm-cancel');
+        const confirmOk = document.getElementById('confirm-ok');
+
+        // Sistema de Toasts/Notificações
+        function showToast(message, type = 'info') {
+            const toastConfig = {
+                text: message,
+                duration: 3000,
+                gravity: "bottom",
+                position: "right",
+                stopOnFocus: true,
+                className: `custom-toast toast-${type}`,
+                escapeMarkup: false,
+            };
+
+            // Criar toast customizado
+            const toast = Toastify(toastConfig);
+            toast.showToast();
+        }
+
+        function showSuccess(message) {
+            showToast(message, 'success');
+        }
+
+        function showError(message) {
+            showToast(message, 'error');
+        }
+
+        function showWarning(message) {
+            showToast(message, 'warning');
+        }
+
+        function showInfo(message) {
+            showToast(message, 'info');
+        }
+
+        // Modal de confirmação customizado
+        function showConfirmModal(title, message, onConfirm) {
+            confirmTitle.textContent = title;
+            confirmBody.innerHTML = `<p>${message}</p>`;
+
+            // Remover event listeners anteriores
+            confirmOk.replaceWith(confirmOk.cloneNode(true));
+            confirmCancel.replaceWith(confirmCancel.cloneNode(true));
+
+            // Adicionar novo event listener
+            document.getElementById('confirm-ok').onclick = function () {
+                closeConfirmModal();
+                onConfirm();
+            };
+
+            document.getElementById('confirm-cancel').onclick = closeConfirmModal;
+
+            confirmModal.style.display = 'block';
+        }
+
+        function closeConfirmModal() {
+            confirmModal.style.display = 'none';
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedToken = localStorage.getItem('authToken');
+            const savedUser = localStorage.getItem('user');
+
+            if (savedToken && savedUser) {
+                authToken = savedToken;
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
+                loadDashboardContent();
+            }
+
+            // Event Listeners
+            loginForm.addEventListener('submit', handleLogin);
+            logoutButton.addEventListener('click', handleLogout);
+        });
+
+        // Handlers de Autenticação
+        async function handleLogin(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            loginButton.classList.add('hidden');
+            loginLoading.classList.remove('hidden');
+            loginError.classList.add('hidden');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    authToken = data.token;
+                    currentUser = data.user;
+
+                    localStorage.setItem('authToken', authToken);
+                    localStorage.setItem('user', JSON.stringify(currentUser));
+
+                    showDashboard();
+                    loadDashboardContent();
+                    showSuccess('Login realizado com sucesso!');
+                } else {
+                    loginError.textContent = data.error || 'Erro ao fazer login';
+                    loginError.classList.remove('hidden');
+                    showError(data.error || 'Erro ao fazer login');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                loginError.textContent = 'Erro de conexão. Tente novamente.';
+                loginError.classList.remove('hidden');
+                showError('Erro de conexão. Tente novamente.');
+            } finally {
+                loginButton.classList.remove('hidden');
+                loginLoading.classList.add('hidden');
+            }
+        }
+
+        function handleLogout() {
+            showConfirmModal(
+                'Confirmar Saída',
+                'Tem certeza que deseja sair do sistema?',
+                () => {
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('user');
+                    authToken = null;
+                    currentUser = null;
+                    showLogin();
+                    showInfo('Você saiu do sistema.');
+                }
+            );
+        }
+
+        // Funções de UI
+        function showLogin() {
+            loginScreen.classList.remove('hidden');
+            dashboard.classList.add('hidden');
+            loginForm.reset();
+        }
+
+        function showDashboard() {
+            loginScreen.classList.add('hidden');
+            dashboard.classList.remove('hidden');
+            userInfo.textContent = `${currentUser.name} (${currentUser.role})`;
+
+            // Mostrar/ocultar menus baseado no tipo de usuário
+            const usersNav = document.getElementById('users-nav');
+            const teachersNav = document.getElementById('teachers-nav');
+            const coursesNav = document.getElementById('courses-nav');
+            const classesNav = document.getElementById('classes-nav');
+            const enrollmentsNav = document.getElementById('enrollments-nav');
+
+            if (currentUser.role === 'admin') {
+                usersNav.classList.remove('hidden');
+                teachersNav.classList.remove('hidden');
+                coursesNav.classList.remove('hidden');
+                classesNav.classList.remove('hidden');
+                enrollmentsNav.classList.remove('hidden');
+            } else if (currentUser.type === 'teacher') {
+                coursesNav.classList.remove('hidden');
+                classesNav.classList.remove('hidden');
+                enrollmentsNav.classList.remove('hidden');
+            } else {
+                coursesNav.classList.remove('hidden');
+                enrollmentsNav.classList.remove('hidden');
+            }
+        }
+
+        function showModal(title, content) {
+            modalTitle.textContent = title;
+            modalBody.innerHTML = content;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        // API Functions - VERSÃO CORRIGIDA
+        async function apiCall(endpoint, options = {}) {
+            const defaultOptions = {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                }
+            };
+
+            // Para métodos que não devem ter Content-Type (GET, DELETE sem body)
+            const method = options.method ? options.method.toUpperCase() : 'GET';
+            const shouldHaveJsonBody = ['POST', 'PUT', 'PATCH'].includes(method) && options.body;
+
+            if (shouldHaveJsonBody) {
+                defaultOptions.headers['Content-Type'] = 'application/json';
+            }
+
+            const config = {
+                ...defaultOptions,
+                ...options,
+                headers: {
+                    ...defaultOptions.headers,
+                    ...options.headers
+                }
+            };
+
+            // Só converte para JSON se for necessário e se tiver body
+            if (config.body && typeof config.body === 'object' && shouldHaveJsonBody) {
+                config.body = JSON.stringify(config.body);
+            } else if (config.body && !shouldHaveJsonBody) {
+                // Remove o body se não deveria ter (como em DELETE)
+                delete config.body;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    let errorMessage = `HTTP error! status: ${response.status}`;
+
+                    try {
+                        const errorData = JSON.parse(errorText);
+                        errorMessage = errorData.error || errorData.message || errorText;
+                    } catch {
+                        errorMessage = errorText || `HTTP error! status: ${response.status}`;
+                    }
+
+                    // Tratamento específico para erros de relacionamento
+                    if (response.status === 409) {
+                        throw new Error(`CONFLICT: ${errorMessage}`);
+                    } else if (response.status === 403) {
+                        throw new Error(`FORBIDDEN: ${errorMessage}`);
+                    } else if (response.status === 404) {
+                        throw new Error(`NOT_FOUND: ${errorMessage}`);
+                    } else {
+                        throw new Error(errorMessage);
+                    }
+                }
+
+                // Para respostas sem conteúdo (como DELETE com status 204)
+                if (response.status === 204) {
+                    return null;
+                }
+
+                return response.json();
+            } catch (error) {
+                console.error('API Call error:', error);
+                throw error;
+            }
+        }
+
+        // Funções de Carregamento de Conteúdo
+        function loadDashboardContent() {
+            let content = '';
+
+            if (currentUser.type === 'teacher' || currentUser.role === 'admin') {
+                content = `
+                    <div class="slide-in">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Bem-vindo, ${currentUser.role === 'admin' ? 'Administrador' : 'Professor'}!</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="card-hover bg-white overflow-hidden shadow rounded-lg">
+                                <div class="px-4 py-5 sm:p-6">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 bg-blue-100 rounded-md p-3">
+                                            <i class="fas fa-book text-blue-600 text-xl"></i>
+                                        </div>
+                                        <div class="ml-5 w-0 flex-1">
+                                            <dl>
+                                                <dt class="text-sm font-medium text-gray-500 truncate">Cursos</dt>
+                                                <dd class="text-lg font-medium text-gray-900">Gerenciar cursos</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 px-4 py-4 sm:px-6">
+                                    <div class="text-sm">
+                                        <a href="#" onclick="loadCourses()" class="font-medium text-blue-600 hover:text-blue-500">Ver cursos</a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card-hover bg-white overflow-hidden shadow rounded-lg">
+                                <div class="px-4 py-5 sm:p-6">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 bg-green-100 rounded-md p-3">
+                                            <i class="fas fa-users text-green-600 text-xl"></i>
+                                        </div>
+                                        <div class="ml-5 w-0 flex-1">
+                                            <dl>
+                                                <dt class="text-sm font-medium text-gray-500 truncate">Turmas</dt>
+                                                <dd class="text-lg font-medium text-gray-900">Gerenciar turmas</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 px-4 py-4 sm:px-6">
+                                    <div class="text-sm">
+                                        <a href="#" onclick="loadClasses()" class="font-medium text-blue-600 hover:text-blue-500">Ver turmas</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-hover bg-white overflow-hidden shadow rounded-lg">
+                                <div class="px-4 py-5 sm:p-6">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 bg-purple-100 rounded-md p-3">
+                                            <i class="fas fa-clipboard-list text-purple-600 text-xl"></i>
+                                        </div>
+                                        <div class="ml-5 w-0 flex-1">
+                                            <dl>
+                                                <dt class="text-sm font-medium text-gray-500 truncate">Matrículas</dt>
+                                                <dd class="text-lg font-medium text-gray-900">Gerenciar matrículas</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 px-4 py-4 sm:px-6">
+                                    <div class="text-sm">
+                                        <a href="#" onclick="loadEnrollments()" class="font-medium text-blue-600 hover:text-blue-500">Ver matrículas</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                content = `
+                    <div class="slide-in">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Bem-vindo, Estudante!</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="card-hover bg-white overflow-hidden shadow rounded-lg">
+                                <div class="px-4 py-5 sm:p-6">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 bg-blue-100 rounded-md p-3">
+                                            <i class="fas fa-book text-blue-600 text-xl"></i>
+                                        </div>
+                                        <div class="ml-5 w-0 flex-1">
+                                            <dl>
+                                                <dt class="text-sm font-medium text-gray-500 truncate">Cursos Disponíveis</dt>
+                                                <dd class="text-lg font-medium text-gray-900">Explorar cursos</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 px-4 py-4 sm:px-6">
+                                    <div class="text-sm">
+                                        <a href="#" onclick="loadCourses()" class="font-medium text-blue-600 hover:text-blue-500">Ver cursos</a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card-hover bg-white overflow-hidden shadow rounded-lg">
+                                <div class="px-4 py-5 sm:p-6">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 bg-purple-100 rounded-md p-3">
+                                            <i class="fas fa-clipboard-list text-purple-600 text-xl"></i>
+                                        </div>
+                                        <div class="ml-5 w-0 flex-1">
+                                            <dl>
+                                                <dt class="text-sm font-medium text-gray-500 truncate">Minhas Matrículas</dt>
+                                                <dd class="text-lg font-medium text-gray-900">Ver matrículas</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 px-4 py-4 sm:px-6">
+                                    <div class="text-sm">
+                                        <a href="#" onclick="loadEnrollments()" class="font-medium text-blue-600 hover:text-blue-500">Ver matrículas</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            dashboardContent.innerHTML = content;
+        }
+
+        // Cursos - CRUD Completo
+        async function loadCourses() {
+            try {
+                const data = await apiCall('/courses');
+                displayCourses(data.courses || data);
+            } catch (error) {
+                handleApiError(error, 'carregar cursos');
+            }
+        }
+
+        function displayCourses(courses) {
+            const canEdit = currentUser.type === 'teacher' || currentUser.role === 'admin';
+
+            let content = `
+                <div class="slide-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">Cursos</h2>
+                        ${canEdit ?
+                    '<button onclick="showCreateCourseForm()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-200">Adicionar Curso</button>' : ''}
+                    </div>
+            `;
+
+            if (courses && courses.length > 0) {
+                content += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">`;
+
+                courses.forEach(course => {
+                    content += `
+                        <div class="card-hover bg-white overflow-hidden shadow rounded-lg">
+                            <div class="px-4 py-5 sm:p-6">
+                                <h3 class="text-lg font-medium text-gray-900 mb-2">${course.title}</h3>
+                                <p class="text-sm text-gray-500 mb-4">${course.description}</p>
+                                <div class="flex justify-between text-sm text-gray-600">
+                                    <span>Carga: ${course.workload}h</span>
+                                    <span>Depto: ${course.department}</span>
+                                </div>
+                            </div>
+                            ${canEdit ?
+                            `<div class="bg-gray-50 px-4 py-4 sm:px-6">
+                                <div class="text-sm flex justify-between">
+                                    <button onclick="showEditCourseForm('${course.id}')" class="font-medium text-blue-600 hover:text-blue-500">Editar</button>
+                                    <button onclick="deleteCourse('${course.id}')" class="font-medium text-red-600 hover:text-red-500">Excluir</button>
+                                </div>
+                            </div>` :
+                            `<div class="bg-gray-50 px-4 py-4 sm:px-6">
+                                <div class="text-sm">
+                                    <button onclick="showCourseDetails('${course.id}')" class="font-medium text-blue-600 hover:text-blue-500">Ver Detalhes</button>
+                                </div>
+                            </div>`}
+                        </div>
+                    `;
+                });
+
+                content += `</div>`;
+            } else {
+                content += `
+                    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+                        <p>Nenhum curso encontrado.</p>
+                    </div>
+                `;
+            }
+
+            content += `</div>`;
+            dashboardContent.innerHTML = content;
+        }
+
+        function showCreateCourseForm() {
+            // Se for admin, buscar lista de professores para seleção
+            const isAdmin = currentUser.role === 'admin';
+
+            let teacherSelectionField = '';
+
+            if (isAdmin) {
+                teacherSelectionField = `
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Professor Responsável</label>
+                        <select id="course-teacherId" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                            <option value="">Carregando professores...</option>
+                        </select>
+                    </div>
+                `;
+            } else {
+                teacherSelectionField = `<input type="hidden" id="course-teacherId" value="${currentUser.id}">`;
+            }
+
+            const formContent = `
+                <form onsubmit="createCourse(event)">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Título</label>
+                            <input type="text" id="course-title" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Descrição</label>
+                            <textarea id="course-description" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Carga Horária</label>
+                            <input type="text" id="course-workload" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Departamento</label>
+                            <input type="text" id="course-department" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                        </div>
+                        ${teacherSelectionField}
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md">Cancelar</button>
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Criar</button>
+                        </div>
+                    </div>
+                </form>
+            `;
+
+            showModal('Criar Novo Curso', formContent);
+
+            // Se for admin, carregar a lista de professores
+            if (isAdmin) {
+                loadTeachersForSelection();
+            }
+        }
+
+        // Função para carregar professores no select
+        async function loadTeachersForSelection() {
+            try {
+                const data = await apiCall('/teachers');
+                const teachers = data.teachers || data;
+                const select = document.getElementById('course-teacherId');
+
+                select.innerHTML = '<option value="">Selecione um professor</option>';
+
+                teachers.forEach(teacher => {
+                    const option = document.createElement('option');
+                    option.value = teacher.id;
+                    option.textContent = teacher.name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                handleApiError(error, 'carregar lista de professores');
+            }
+        }
+
+        async function showEditCourseForm(courseId) {
+            try {
+                const data = await apiCall(`/courses/${courseId}`);
+                const course = data.course || data;
+
+                const formContent = `
+                    <form onsubmit="updateCourse(event, '${courseId}')">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Título</label>
+                                <input type="text" id="edit-course-title" value="${course.title}" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Descrição</label>
+                                <textarea id="edit-course-description" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">${course.description}</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Carga Horária</label>
+                                <input type="text" id="edit-course-workload" value="${course.workload}" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Departamento</label>
+                                <input type="text" id="edit-course-department" value="${course.department}" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                            </div>
+                            <div class="flex justify-end space-x-3">
+                                <button type="button" onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md">Cancelar</button>
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Atualizar</button>
+                            </div>
+                        </div>
+                    </form>
+                `;
+                showModal('Editar Curso', formContent);
+            } catch (error) {
+                handleApiError(error, 'carregar dados do curso');
+            }
+        }
+
+        async function createCourse(event) {
+            event.preventDefault();
+
+            const teacherId = currentUser.role === 'admin'
+                ? document.getElementById('course-teacherId').value
+                : currentUser.id;
+
+            // Validação para admin
+            if (currentUser.role === 'admin' && !teacherId) {
+                showError('Por favor, selecione um professor responsável');
+                return;
+            }
+
+            const courseData = {
+                title: document.getElementById('course-title').value,
+                description: document.getElementById('course-description').value,
+                workload: document.getElementById('course-workload').value,
+                department: document.getElementById('course-department').value,
+                teachersId: teacherId
+            };
+
+            try {
+                await apiCall('/courses', {
+                    method: 'POST',
+                    body: courseData
+                });
+                closeModal();
+                loadCourses();
+                showSuccess('Curso criado com sucesso!');
+            } catch (error) {
+                handleApiError(error, 'criar curso');
+            }
+        }
+
+        async function updateCourse(event, courseId) {
+            event.preventDefault();
+
+            const courseData = {
+                title: document.getElementById('edit-course-title').value,
+                description: document.getElementById('edit-course-description').value,
+                workload: document.getElementById('edit-course-workload').value,
+                department: document.getElementById('edit-course-department').value
+            };
+
+            try {
+                await apiCall(`/courses/${courseId}`, {
+                    method: 'PUT',
+                    body: courseData
+                });
+                closeModal();
+                loadCourses();
+                showSuccess('Curso atualizado com sucesso!');
+            } catch (error) {
+                handleApiError(error, 'atualizar curso');
+            }
+        }
+
+        async function deleteCourse(courseId) {
+            showConfirmModal(
+                'Excluir Curso',
+                'Tem certeza que deseja excluir este curso? Esta ação não pode ser desfeita.',
+                async () => {
+                    try {
+                        await apiCall(`/courses/${courseId}`, { method: 'DELETE' });
+                        loadCourses();
+                        showSuccess('Curso excluído com sucesso!');
+                    } catch (error) {
+                        handleApiError(error, 'excluir curso');
+                    }
+                }
+            );
+        }
+
+        // Turmas - CRUD Completo
+        async function loadClasses() {
+            try {
+                const data = await apiCall('/classes');
+                displayClasses(data.classes || data);
+            } catch (error) {
+                handleApiError(error, 'carregar turmas');
+            }
+        }
+
+        function displayClasses(classes) {
+            const canEdit = currentUser.type === 'teacher' || currentUser.role === 'admin';
+
+            let content = `
+                <div class="slide-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">Turmas</h2>
+                        ${canEdit ?
+                    '<button onclick="showCreateClassForm()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-200">Adicionar Turma</button>' : ''}
+                    </div>
+            `;
+
+            if (classes && classes.length > 0) {
+                content += `<div class="bg-white shadow overflow-hidden sm:rounded-md">`;
+                content += `<ul class="divide-y divide-gray-200">`;
+
+                classes.forEach(classItem => {
+                    content += `
+                        <li>
+                            <div class="px-4 py-4 flex items-center justify-between sm:px-6">
+                                <div class="flex items-center">
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center">
+                                            <p class="text-sm font-medium text-blue-600 truncate">${classItem.name}</p>
+                                            <p class="ml-2 flex-shrink-0 font-normal text-gray-500">Semestre: ${classItem.semester}</p>
+                                        </div>
+                                        <div class="mt-2 flex">
+                                            <div class="flex items-center text-sm text-gray-500">
+                                                <i class="fas fa-clock mr-1"></i>
+                                                <p>${classItem.schedule}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                ${canEdit ?
+                            `<div class="flex space-x-2">
+                                    <button onclick="showEditClassForm('${classItem.id}')" class="text-blue-600 hover:text-blue-900">Editar</button>
+                                    <button onclick="deleteClass('${classItem.id}')" class="text-red-600 hover:text-red-900">Excluir</button>
+                                </div>` : ''}
+                            </div>
+                        </li>
+                    `;
+                });
+
+                content += `</ul></div>`;
+            } else {
+                content += `
+                    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+                        <p>Nenhuma turma encontrada.</p>
+                    </div>
+                `;
+            }
+
+            content += `</div>`;
+            dashboardContent.innerHTML = content;
+        }
+
+        async function showCreateClassForm() {
+            try {
+                const [coursesData, teachersData] = await Promise.all([
+                    apiCall('/courses'),
+                    apiCall('/teachers')
+                ]);
+
+                const courses = coursesData.courses || coursesData;
+                const teachers = teachersData.teachers || teachersData;
+
+                const coursesOptions = courses.map(course =>
+                    `<option value="${course.id}">${course.title}</option>`
+                ).join('');
+
+                const teachersOptions = teachers.map(teacher =>
+                    `<option value="${teacher.id}">${teacher.name}</option>`
+                ).join('');
+
+                const formContent = `
+                    <form onsubmit="createClass(event)">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Curso</label>
+                                <select id="class-courseId" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="">Selecione um curso</option>
+                                    ${coursesOptions}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Professor</label>
+                                <select id="class-teacherId" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="">Selecione um professor</option>
+                                    ${teachersOptions}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nome da Turma</label>
+                                <input type="text" id="class-name" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Ex: Turma A">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Semestre</label>
+                                <input type="text" id="class-semester" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Ex: 2024.1">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Horário</label>
+                                <input type="text" id="class-schedule" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Ex: Segunda e Quarta, 19:00-21:00">
+                            </div>
+                            <div class="flex justify-end space-x-3">
+                                <button type="button" onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md">Cancelar</button>
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Criar</button>
+                            </div>
+                        </div>
+                    </form>
+                `;
+                showModal('Criar Nova Turma', formContent);
+            } catch (error) {
+                handleApiError(error, 'carregar dados');
+            }
+        }
+
+        async function showEditClassForm(classId) {
+            try {
+                const [classData, coursesData, teachersData] = await Promise.all([
+                    apiCall(`/classes/${classId}`),
+                    apiCall('/courses'),
+                    apiCall('/teachers')
+                ]);
+
+                const classItem = classData.class || classData;
+                const courses = coursesData.courses || coursesData;
+                const teachers = teachersData.teachers || teachersData;
+
+                const coursesOptions = courses.map(course =>
+                    `<option value="${course.id}" ${course.id === classItem.courseId ? 'selected' : ''}>${course.title}</option>`
+                ).join('');
+
+                const teachersOptions = teachers.map(teacher =>
+                    `<option value="${teacher.id}" ${teacher.id === classItem.teacherId ? 'selected' : ''}>${teacher.name}</option>`
+                ).join('');
+
+                const formContent = `
+                    <form onsubmit="updateClass(event, '${classId}')">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Curso</label>
+                                <select id="edit-class-courseId" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="">Selecione um curso</option>
+                                    ${coursesOptions}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Professor</label>
+                                <select id="edit-class-teacherId" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="">Selecione um professor</option>
+                                    ${teachersOptions}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nome da Turma</label>
+                                <input type="text" id="edit-class-name" value="${classItem.name}" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Semestre</label>
+                                <input type="text" id="edit-class-semester" value="${classItem.semester}" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Horário</label>
+                                <input type="text" id="edit-class-schedule" value="${classItem.schedule}" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                            </div>
+                            <div class="flex justify-end space-x-3">
+                                <button type="button" onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md">Cancelar</button>
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Atualizar</button>
+                            </div>
+                        </div>
+                    </form>
+                `;
+                showModal('Editar Turma', formContent);
+            } catch (error) {
+                handleApiError(error, 'carregar dados da turma');
+            }
+        }
+
+        async function createClass(event) {
+            event.preventDefault();
+
+            const classData = {
+                courseId: document.getElementById('class-courseId').value,
+                teacherId: document.getElementById('class-teacherId').value,
+                name: document.getElementById('class-name').value,
+                semester: document.getElementById('class-semester').value,
+                schedule: document.getElementById('class-schedule').value
+            };
+
+            try {
+                await apiCall('/classes', {
+                    method: 'POST',
+                    body: classData
+                });
+                closeModal();
+                loadClasses();
+                showSuccess('Turma criada com sucesso!');
+            } catch (error) {
+                handleApiError(error, 'criar turma');
+            }
+        }
+
+        async function updateClass(event, classId) {
+            event.preventDefault();
+
+            const classData = {
+                courseId: document.getElementById('edit-class-courseId').value,
+                teacherId: document.getElementById('edit-class-teacherId').value,
+                name: document.getElementById('edit-class-name').value,
+                semester: document.getElementById('edit-class-semester').value,
+                schedule: document.getElementById('edit-class-schedule').value
+            };
+
+            try {
+                await apiCall(`/classes/${classId}`, {
+                    method: 'PUT',
+                    body: classData
+                });
+                closeModal();
+                loadClasses();
+                showSuccess('Turma atualizada com sucesso!');
+            } catch (error) {
+                handleApiError(error, 'atualizar turma');
+            }
+        }
+
+        async function deleteClass(classId) {
+            showConfirmModal(
+                'Excluir Turma',
+                'Tem certeza que deseja excluir esta turma? Esta ação não pode ser desfeita.',
+                async () => {
+                    try {
+                        await apiCall(`/classes/${classId}`, { method: 'DELETE' });
+                        loadClasses();
+                        showSuccess('Turma excluída com sucesso!');
+                    } catch (error) {
+                        handleApiError(error, 'excluir turma');
+                    }
+                }
+            );
+        }
+
+        // Matrículas - CRUD Completo
+        async function loadEnrollments() {
+            try {
+                const endpoint = currentUser.role === 'admin' ? '/enrollments' : `/enrollments?userId=${currentUser.id}`;
+                const data = await apiCall(endpoint);
+                displayEnrollments(data.enrollments || data);
+            } catch (error) {
+                handleApiError(error, 'carregar matrículas');
+            }
+        }
+
+        function displayEnrollments(enrollments) {
+            const canEdit = currentUser.role === 'admin';
+
+            let content = `
+                <div class="slide-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">Matrículas</h2>
+                        ${currentUser.type === 'user' || currentUser.role === 'admin' ?
+                    '<button onclick="showCreateEnrollmentForm()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-200">Nova Matrícula</button>' : ''}
+                    </div>
+            `;
+
+            if (enrollments && enrollments.length > 0) {
+                content += `<div class="bg-white shadow overflow-hidden sm:rounded-md">`;
+                content += `<ul class="divide-y divide-gray-200">`;
+
+                enrollments.forEach(enrollment => {
+                    content += `
+                        <li>
+                            <div class="px-4 py-4 flex items-center justify-between sm:px-6">
+                                <div class="flex items-center">
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center">
+                                            <p class="text-sm font-medium text-blue-600 truncate">Matrícula: ${enrollment.enrollment || enrollment.enrollmentNumber}</p>
+                                            <p class="ml-2 flex-shrink-0 font-normal text-gray-500">Data: ${new Date(enrollment.enrolledAt).toLocaleDateString('pt-BR')}</p>
+                                        </div>
+                                        <div class="mt-2 flex">
+                                            <div class="flex items-center text-sm text-gray-500">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${enrollment.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                                    ${enrollment.isActive ? 'Ativa' : 'Inativa'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    ${canEdit ?
+                            `<button onclick="toggleEnrollmentStatus('${enrollment.enrollmentId || enrollment.id}', ${!enrollment.isActive})" class="text-yellow-600 hover:text-yellow-900">${enrollment.isActive ? 'Desativar' : 'Ativar'}</button>
+                                    <button onclick="deleteEnrollment('${enrollment.enrollmentId || enrollment.id}')" class="text-red-600 hover:text-red-900">Excluir</button>` :
+                            '<button onclick="showEnrollmentDetails(\'' + (enrollment.enrollmentId || enrollment.id) + '\')" class="text-blue-600 hover:text-blue-900">Detalhes</button>'}
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                });
+
+                content += `</ul></div>`;
+            } else {
+                content += `
+                    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+                        <p>Nenhuma matrícula encontrada.</p>
+                    </div>
+                `;
+            }
+
+            content += `</div>`;
+            dashboardContent.innerHTML = content;
+        }
+
+        async function showCreateEnrollmentForm() {
+            try {
+                const [classesData, usersData] = await Promise.all([
+                    apiCall('/classes'),
+                    currentUser.role === 'admin' ? apiCall('/users') : Promise.resolve({ users: [{ id: currentUser.id, name: currentUser.name, email: currentUser.email }] })
+                ]);
+
+                const classes = classesData.classes || classesData;
+                const users = usersData.users || usersData;
+
+                const classesOptions = classes.map(classItem =>
+                    `<option value="${classItem.id}">${classItem.name} - ${classItem.semester}</option>`
+                ).join('');
+
+                const usersOptions = users.map(user =>
+                    `<option value="${user.id}" ${user.id === currentUser.id ? 'selected' : ''}>${user.name} - ${user.email}</option>`
+                ).join('');
+
+                const formContent = `
+                    <form onsubmit="createEnrollment(event)">
+                        <div class="space-y-4">
+                            ${currentUser.role === 'admin' ? `
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Usuário</label>
+                                <select id="enrollment-userId" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="">Selecione um usuário</option>
+                                    ${usersOptions}
+                                </select>
+                            </div>
+                            ` : `<input type="hidden" id="enrollment-userId" value="${currentUser.id}">`}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Turma</label>
+                                <select id="enrollment-classId" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="">Selecione uma turma</option>
+                                    ${classesOptions}
+                                </select>
+                            </div>
+                            <div class="flex justify-end space-x-3">
+                                <button type="button" onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md">Cancelar</button>
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Matricular</button>
+                            </div>
+                        </div>
+                    </form>
+                `;
+                showModal('Nova Matrícula', formContent);
+            } catch (error) {
+                handleApiError(error, 'carregar dados');
+            }
+        }
+
+        async function createEnrollment(event) {
+            event.preventDefault();
+
+            const enrollmentData = {
+                userId: document.getElementById('enrollment-userId').value,
+                classId: document.getElementById('enrollment-classId').value
+            };
+
+            try {
+                await apiCall('/enrollments', {
+                    method: 'POST',
+                    body: enrollmentData
+                });
+                closeModal();
+                loadEnrollments();
+                showSuccess('Matrícula criada com sucesso!');
+            } catch (error) {
+                handleApiError(error, 'criar matrícula');
+            }
+        }
+
+        async function toggleEnrollmentStatus(enrollmentId, newStatus) {
+            try {
+                await apiCall(`/enrollments/${enrollmentId}`, {
+                    method: 'PUT',
+                    body: { isActive: newStatus }
+                });
+                loadEnrollments();
+                showSuccess(`Matrícula ${newStatus ? 'ativada' : 'desativada'} com sucesso!`);
+            } catch (error) {
+                handleApiError(error, 'atualizar matrícula');
+            }
+        }
+
+        async function deleteEnrollment(enrollmentId) {
+            showConfirmModal(
+                'Excluir Matrícula',
+                'Tem certeza que deseja excluir esta matrícula? Esta ação não pode ser desfeita.',
+                async () => {
+                    try {
+                        await apiCall(`/enrollments/${enrollmentId}`, { method: 'DELETE' });
+                        loadEnrollments();
+                        showSuccess('Matrícula excluída com sucesso!');
+                    } catch (error) {
+                        handleApiError(error, 'excluir matrícula');
+                    }
+                }
+            );
+        }
+
+        // Usuários - CRUD Completo (apenas admin)
+        async function loadUsers() {
+            if (currentUser.role !== 'admin') return;
+
+            try {
+                const data = await apiCall('/users');
+                displayUsers(data.users || data);
+            } catch (error) {
+                handleApiError(error, 'carregar usuários');
+            }
+        }
+
+        function displayUsers(users) {
+            let content = `
+                <div class="slide-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">Usuários</h2>
+                        <button onclick="showCreateUserForm()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-200">Adicionar Usuário</button>
+                    </div>
+            `;
+
+            if (users && users.length > 0) {
+                content += `<div class="bg-white shadow overflow-hidden sm:rounded-md">`;
+                content += `<ul class="divide-y divide-gray-200">`;
+
+                users.forEach(user => {
+                    content += `
+                        <li>
+                            <div class="px-4 py-4 flex items-center justify-between sm:px-6">
+                                <div class="flex items-center">
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center">
+                                            <p class="text-sm font-medium text-blue-600 truncate">${user.name}</p>
+                                            <p class="ml-2 flex-shrink-0 font-normal text-gray-500">${user.email}</p>
+                                        </div>
+                                        <div class="mt-2 flex">
+                                            <div class="flex items-center text-sm text-gray-500">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                    ${user.role}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button onclick="showEditUserForm('${user.id}')" class="text-blue-600 hover:text-blue-900">Editar</button>
+                                    <button onclick="deleteUser('${user.id}')" class="text-red-600 hover:text-red-900">Excluir</button>
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                });
+
+                content += `</ul></div>`;
+            } else {
+                content += `
+                    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+                        <p>Nenhum usuário encontrado.</p>
+                    </div>
+                `;
+            }
+
+            content += `</div>`;
+            dashboardContent.innerHTML = content;
+        }
+
+        function showCreateUserForm() {
+            const formContent = `
+                <form onsubmit="createUser(event)">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Nome</label>
+                            <input type="text" id="user-name" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="user-email" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Senha</label>
+                            <input type="password" id="user-password" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Tipo</label>
+                            <select id="user-role" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                                <option value="student">Estudante</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md">Cancelar</button>
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Criar</button>
+                        </div>
+                    </div>
+                </form>
+            `;
+            showModal('Novo Usuário', formContent);
+        }
+
+        async function showEditUserForm(userId) {
+            try {
+                const data = await apiCall(`/users/${userId}`);
+                const user = data.user || data;
+
+                const formContent = `
+                    <form onsubmit="updateUser(event, '${userId}')">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nome</label>
+                                <input type="text" id="edit-user-name" value="${user.name}" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" id="edit-user-email" value="${user.email}" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nova Senha (deixe em branco para manter a atual)</label>
+                                <input type="password" id="edit-user-password" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Tipo</label>
+                                <select id="edit-user-role" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="student" ${user.role === 'student' ? 'selected' : ''}>Estudante</option>
+                                    <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Administrador</option>
+                                </select>
+                            </div>
+                            <div class="flex justify-end space-x-3">
+                                <button type="button" onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md">Cancelar</button>
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Atualizar</button>
+                            </div>
+                        </div>
+                    </form>
+                `;
+                showModal('Editar Usuário', formContent);
+            } catch (error) {
+                handleApiError(error, 'carregar dados do usuário');
+            }
+        }
+
+        async function createUser(event) {
+            event.preventDefault();
+
+            const userData = {
+                name: document.getElementById('user-name').value,
+                email: document.getElementById('user-email').value,
+                password: document.getElementById('user-password').value,
+                role: document.getElementById('user-role').value
+            };
+
+            try {
+                await apiCall('/users', {
+                    method: 'POST',
+                    body: userData
+                });
+                closeModal();
+                loadUsers();
+                showSuccess('Usuário criado com sucesso!');
+            } catch (error) {
+                handleApiError(error, 'criar usuário');
+            }
+        }
+
+        async function updateUser(event, userId) {
+            event.preventDefault();
+
+            const userData = {
+                name: document.getElementById('edit-user-name').value,
+                email: document.getElementById('edit-user-email').value,
+                role: document.getElementById('edit-user-role').value
+            };
+
+            const password = document.getElementById('edit-user-password').value;
+            if (password) {
+                userData.password = password;
+            }
+
+            try {
+                await apiCall(`/users/${userId}`, {
+                    method: 'PUT',
+                    body: userData
+                });
+                closeModal();
+                loadUsers();
+                showSuccess('Usuário atualizado com sucesso!');
+            } catch (error) {
+                handleApiError(error, 'atualizar usuário');
+            }
+        }
+
+        async function deleteUser(userId) {
+            showConfirmModal(
+                'Excluir Usuário',
+                'Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.',
+                async () => {
+                    try {
+                        await apiCall(`/users/${userId}`, { method: 'DELETE' });
+                        loadUsers();
+                        showSuccess('Usuário excluído com sucesso!');
+                    } catch (error) {
+                        handleApiError(error, 'excluir usuário');
+                    }
+                }
+            );
+        }
+
+        // Professores - CRUD Completo (apenas admin)
+        async function loadTeachers() {
+            if (currentUser.role !== 'admin') return;
+
+            try {
+                const data = await apiCall('/teachers');
+                displayTeachers(data.teachers || data);
+            } catch (error) {
+                handleApiError(error, 'carregar professores');
+            }
+        }
+
+        function displayTeachers(teachers) {
+            let content = `
+                <div class="slide-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">Professores</h2>
+                        <button onclick="showCreateTeacherForm()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-200">Adicionar Professor</button>
+                    </div>
+            `;
+
+            if (teachers && teachers.length > 0) {
+                content += `<div class="bg-white shadow overflow-hidden sm:rounded-md">`;
+                content += `<ul class="divide-y divide-gray-200">`;
+
+                teachers.forEach(teacher => {
+                    content += `
+                        <li>
+                            <div class="px-4 py-4 flex items-center justify-between sm:px-6">
+                                <div class="flex items-center">
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center">
+                                            <p class="text-sm font-medium text-blue-600 truncate">${teacher.name}</p>
+                                            <p class="ml-2 flex-shrink-0 font-normal text-gray-500">${teacher.email}</p>
+                                        </div>
+                                        <div class="mt-2 flex">
+                                            <div class="flex items-center text-sm text-gray-500">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    ${teacher.role}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button onclick="showEditTeacherForm('${teacher.id}')" class="text-blue-600 hover:text-blue-900">Editar</button>
+                                    <button onclick="deleteTeacher('${teacher.id}')" class="text-red-600 hover:text-red-900">Excluir</button>
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                });
+
+                content += `</ul></div>`;
+            } else {
+                content += `
+                    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+                        <p>Nenhum professor encontrado.</p>
+                    </div>
+                `;
+            }
+
+            content += `</div>`;
+            dashboardContent.innerHTML = content;
+        }
+
+        function showCreateTeacherForm() {
+            const formContent = `
+                <form onsubmit="createTeacher(event)">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Nome</label>
+                            <input type="text" id="teacher-name" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="teacher-email" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Senha</label>
+                            <input type="password" id="teacher-password" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md">Cancelar</button>
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Criar</button>
+                        </div>
+                    </div>
+                </form>
+            `;
+            showModal('Novo Professor', formContent);
+        }
+
+        async function showEditTeacherForm(teacherId) {
+            try {
+                const data = await apiCall(`/teachers/${teacherId}`);
+                const teacher = data.teacher || data;
+
+                const formContent = `
+                    <form onsubmit="updateTeacher(event, '${teacherId}')">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nome</label>
+                                <input type="text" id="edit-teacher-name" value="${teacher.name}" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" id="edit-teacher-email" value="${teacher.email}" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Nova Senha (deixe em branco para manter a atual)</label>
+                                <input type="password" id="edit-teacher-password" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                            </div>
+                            <div class="flex justify-end space-x-3">
+                                <button type="button" onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md">Cancelar</button>
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Atualizar</button>
+                            </div>
+                        </div>
+                    </form>
+                `;
+                showModal('Editar Professor', formContent);
+            } catch (error) {
+                handleApiError(error, 'carregar dados do professor');
+            }
+        }
+
+        async function createTeacher(event) {
+            event.preventDefault();
+
+            const teacherData = {
+                name: document.getElementById('teacher-name').value,
+                email: document.getElementById('teacher-email').value,
+                password: document.getElementById('teacher-password').value
+            };
+
+            try {
+                await apiCall('/teachers', {
+                    method: 'POST',
+                    body: teacherData
+                });
+                closeModal();
+                loadTeachers();
+                showSuccess('Professor criado com sucesso!');
+            } catch (error) {
+                handleApiError(error, 'criar professor');
+            }
+        }
+
+        async function updateTeacher(event, teacherId) {
+            event.preventDefault();
+
+            const teacherData = {
+                name: document.getElementById('edit-teacher-name').value,
+                email: document.getElementById('edit-teacher-email').value
+            };
+
+            const password = document.getElementById('edit-teacher-password').value;
+            if (password) {
+                teacherData.password = password;
+            }
+
+            try {
+                await apiCall(`/teachers/${teacherId}`, {
+                    method: 'PUT',
+                    body: teacherData
+                });
+                closeModal();
+                loadTeachers();
+                showSuccess('Professor atualizado com sucesso!');
+            } catch (error) {
+                handleApiError(error, 'atualizar professor');
+            }
+        }
+
+        async function deleteTeacher(teacherId) {
+            showConfirmModal(
+                'Excluir Professor',
+                'Tem certeza que deseja excluir este professor? Esta ação não pode ser desfeita.',
+                async () => {
+                    try {
+                        await apiCall(`/teachers/${teacherId}`, { method: 'DELETE' });
+                        loadTeachers();
+                        showSuccess('Professor excluído com sucesso!');
+                    } catch (error) {
+                        handleApiError(error, 'excluir professor');
+                    }
+                }
+            );
+        }
+
+        // Funções auxiliares
+        function showCourseDetails(courseId) {
+            showModal('Detalhes do Curso', `<p>Carregando detalhes do curso ${courseId}...</p>`);
+        }
+
+        function showEnrollmentDetails(enrollmentId) {
+            showModal('Detalhes da Matrícula', `<p>Carregando detalhes da matrícula ${enrollmentId}...</p>`);
+        }
+
+        // Tratamento centralizado de erros da API
+        function handleApiError(error, context) {
+            console.error(`Erro ao ${context}:`, error);
+
+            const errorMessage = error.message || `Erro desconhecido ao ${context}`;
+
+            // Tratamento específico para erros de relacionamento
+            if (errorMessage.includes('CONFLICT:')) {
+                const conflictMessage = errorMessage.replace('CONFLICT:', '').trim();
+                showWarning(`Não foi possível completar a ação: ${conflictMessage}`);
+            } else if (errorMessage.includes('FORBIDDEN:')) {
+                const forbiddenMessage = errorMessage.replace('FORBIDDEN:', '').trim();
+                showError(`Acesso negado: ${forbiddenMessage}`);
+            } else if (errorMessage.includes('NOT_FOUND:')) {
+                const notFoundMessage = errorMessage.replace('NOT_FOUND:', '').trim();
+                showError(`Recurso não encontrado: ${notFoundMessage}`);
+            } else {
+                showError(`Erro ao ${context}: ${errorMessage}`);
+            }
+        }
+
+        // Fechar modal ao clicar fora dele
+        window.onclick = function (event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+            if (event.target === confirmModal) {
+                closeConfirmModal();
+            }
+        }
+    </script>
+</body>
+
+</html>

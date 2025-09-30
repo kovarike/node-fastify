@@ -1,4 +1,5 @@
 import fastify, {type FastifyRequest, type FastifyReply} from 'fastify'
+import fastifyStatic from '@fastify/static';
 import cookie from "@fastify/cookie"
 import fjwt from '@fastify/jwt';
 import { validatorCompiler, serializerCompiler, type ZodTypeProvider } from 'fastify-type-provider-zod'
@@ -23,11 +24,27 @@ import { usersRouteGet } from './routers/usesr/users-get.ts';
 import { usersRoutePost } from './routers/usesr/users-post.ts';
 import { usersRoutePut } from './routers/usesr/users-put.ts';
 
+import { enrollmentsRoutePost } from './routers/enrollments/enrollments-post.ts';
+import { enrollmentsRouteGet } from './routers/enrollments/enrollments-get.ts';
+import { enrollmentsRoutePut } from './routers/enrollments/enrollments-put.ts';
+import { enrollmentsRouteDelete } from './routers/enrollments/enrollments-delete.ts';
+
+import { classesRoutePost } from './routers/classes/classes-post.ts';
+import { classesRouteGet } from './routers/classes/classes-get.ts';
+import { classesRoutePut } from './routers/classes/classes-put.ts';
+import { classesRouteDelete } from './routers/classes/classes-delete.ts';
+
 import { authRoute } from './routers/auth/auth.ts';
 
 import { middleware } from './services/middleware.ts';
 import { errors } from './services/errors.ts';
 import { currentSecret } from './services/utils.ts';
+
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const server = fastify({
   logger: {
@@ -107,6 +124,16 @@ server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyRe
 server.register(middleware);
 server.register(errors);
 
+server.register(fastifyStatic, {
+  root: path.join(__dirname, 'public'),
+  prefix: '/', // serve files from the root of the server
+});
+
+// Rota para servir a página inicial, por exemplo
+server.get('/', async (request, reply) => {
+  return reply.sendFile('index.html'); // Envia o arquivo home.html
+});
+
 // Registra as rotas
 server.register(coursesRouteDelete);
 server.register(coursesRouteGet);
@@ -122,6 +149,16 @@ server.register(usersRouteDelete);
 server.register(usersRouteGet);
 server.register(usersRoutePost);
 server.register(usersRoutePut);
+
+server.register(classesRoutePut);
+server.register(classesRouteGet);
+server.register(classesRoutePost); 
+server.register(classesRouteDelete);
+
+server.register(enrollmentsRoutePost);
+server.register(enrollmentsRouteGet);
+server.register(enrollmentsRoutePut);
+server.register(enrollmentsRouteDelete);
 
 server.register(authRoute);
 

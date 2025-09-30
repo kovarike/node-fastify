@@ -1,5 +1,5 @@
 {
-  "id": "244ee4f5-abcb-4555-a343-a0204a1a810c",
+  "id": "d58c6d0c-4c0d-4c21-86df-406be96563fb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -139,7 +139,7 @@
           "name": "teachersId",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         }
       },
       "indexes": {

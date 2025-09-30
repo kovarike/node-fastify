@@ -1,8 +1,6 @@
 import { type FastifyReply, type FastifyRequest } from 'fastify'
 import { type FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import { jsonSchemaTransform } from 'fastify-type-provider-zod'
-import cookie from "@fastify/cookie"
-import fjwt from '@fastify/jwt';
 import rateLimit from '@fastify/rate-limit'
 import { fastifySwagger } from '@fastify/swagger'
 import scalar from '@scalar/fastify-api-reference'
@@ -10,7 +8,6 @@ import scalar from '@scalar/fastify-api-reference'
 import crypto from 'crypto';
 
 import { env } from './env.ts';
-import { currentSecret } from './utils.ts';
 
 export const middleware: FastifyPluginAsyncZod = async (server) => {
   // Middleware para verificar Content-Type e outros headers
@@ -56,30 +53,6 @@ export const middleware: FastifyPluginAsyncZod = async (server) => {
     }
 
     return done();
-  });
-
-  server.register(cookie, {
-    secret: [
-      currentSecret,
-      env.CURRENT_COOKIE_SECRETET,
-      env.PREVIOUS_COOKIE_SECRETET_1,
-      env.PREVIOUS_COOKIE_SECRETET_2
-    ],
-    hook: 'onRequest', // Hook padrão para parsing automático
-    algorithm: 'sha256', // Algoritmo forte para signing
-    parseOptions: {     // Opções para parsing de cookies recebidos
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax'
-    }
-  });
-
-  // Registrar o plugin JWT
-  server.register(fjwt, {
-    secret: env.SECRETET_JWT,
-    sign: {
-      expiresIn: '1h',
-    },
   });
 
   server.register(rateLimit, {

@@ -2,8 +2,8 @@ import { z } from "zod";
 
 const envSchema = z.object({
   NODE_ENV: z.string(),
-  DATABSE_URL: z.url(),
-  NODE_ENV_DATABASE: z.url(),
+  DATABSE_URL: z.string(),
+  NODE_ENV_DATABASE: z.string(),
   NODE_ENV_JWT: z.string(),
   SALT_ROUNDS: z.string().transform(val => Number(val)),
   SECRETET_JWT: z.string(),

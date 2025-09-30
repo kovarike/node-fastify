@@ -4,6 +4,7 @@ import { db } from '../../db/client.ts';
 import { courses } from '../../db/schema.ts';
 import { eq } from 'drizzle-orm';
 import { extractRole } from '../../services/utils.ts';
+import { checkUserRole } from '../hook/check-user-role.ts';
 
 export const coursesRoutePost: FastifyPluginAsyncZod = async (server) => {
   server.post('/courses', {
@@ -50,16 +51,16 @@ export const coursesRoutePost: FastifyPluginAsyncZod = async (server) => {
         })
       }
     },
-    preValidation: [server.authenticate],
+    // preValidation: [server.authenticate],
   }, async (request, reply) => {
     try {
       // Verificar se o usuário tem permissão de instrutor
-      if (extractRole(request.user.role, request.user.id, request)) {
-        return reply.code(403).send({
-          error: 'Forbidden',
-          message: 'Only instructors or admins can create courses'
-        });
-      }
+      // if (checkUserRole(request.user.role)) {
+      //   return reply.code(403).send({
+      //     error: 'Forbidden',
+      //     message: 'Only instructors or admins can create courses'
+      //   });
+      // }
 
       const { title, description, department, workload } = request.body;
 

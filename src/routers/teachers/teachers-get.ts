@@ -4,7 +4,7 @@ import { and, asc, count, eq, ilike, type SQL } from 'drizzle-orm'
 import { db } from '../../db/client.ts';
 import { courses, classes, enrollments, teachers } from '../../db/schema.ts';
 
-export const coursesRouteGet: FastifyPluginAsyncZod = async (server) => {
+export const teachersRouteGet: FastifyPluginAsyncZod = async (server) => {
   server.get('/teachers', {
     schema: {
       tags: ['teachers'],
@@ -95,103 +95,6 @@ export const coursesRouteGet: FastifyPluginAsyncZod = async (server) => {
       });
     }
   });
-
-  // server.get('/teachers/:id', {
-  //   schema: {
-  //     tags: ['teachers'],
-  //     summary: 'Get Teacher by ID',
-  //     description: 'Retrieve a specific Teacher using its unique ID',
-  //     params: z.object({
-  //       id: z.uuid().describe('Unique identifier for the Teacher'),
-  //     }),
-  //     response: {
-  //       200: z.object({
-  //         teacher: z.object({
-  //           id: z.uuid(),
-  //         name: z.string(),
-  //         email: z.string(),
-  //         role: z.string(),
-  //         courses: z.array(z.object({
-  //           id: z.uuid(),
-  //           title: z.string(),
-  //           classes: z.array(z.object({
-  //             id: z.uuid(),
-  //             name: z.string(),
-  //             semester: z.string(),
-  //             schedule: z.string(),
-  //             enrolledStudents: z.number()
-  //           }))
-  //         }))
-  //         })
-  //       }),
-  //       404: z.object({
-  //         error: z.string(),
-  //         details: z.string()
-  //       }),
-  //       500: z.object({
-  //         error: z.string(),
-  //         code: z.string()
-  //       })
-  //     }
-  //   }
-  // }, async (request, reply) => {
-  //   try {
-  //     const { id } = request.params;
-
-  //     const teacher = await db.query.teachers.findFirst({
-  //       where: eq(teachers.id, id),
-  //       with: {
-  //         courses: {
-  //           with: {
-  //             classes: {
-  //               with: {
-  //                 enrollments: {
-  //                   where: eq(enrollments.isActive, true),
-  //                   columns: { enrollmentId: true }
-  //                 }
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }
-  //     });
-
-  //     if (!teacher) {
-  //       return reply.code(404).send({
-  //         error: 'Teacher not found',
-  //         details: `No teacher found with ID: ${id}`
-  //       });
-  //     }
-
-  //     const formattedTeacher = {
-  //       id: teacher.id,
-  //       name: teacher.name,
-  //       email: teacher.email,
-  //       role: teacher.role,
-  //       courses: teacher.courses.map(course => ({
-  //         id: course.id,
-  //         title: course.title,
-  //         classes: course.classes.map(classItem => ({
-  //           id: classItem.id,
-  //           name: classItem.name,
-  //           semester: classItem.semester,
-  //           schedule: classItem.schedule,
-  //           enrolledStudents: classItem.enrollments.length
-  //         }))
-  //       }))
-  //     };
-
-  //     return reply.code(200).send({ teacher: formattedTeacher });
-
-  //   } catch (error) {
-  //     request.log.error(`Error fetching teacher: ${error}`);
-  //     return reply.code(500).send({
-  //       error: 'Internal server error while fetching teacher',
-  //       code: 'TEACHER_FETCH_FAILED'
-  //     });
-  //   }
-  // });
-
 
   server.get('/teachers/:id', {
     schema: {

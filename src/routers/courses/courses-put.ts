@@ -4,6 +4,7 @@ import { and, ne, eq, } from 'drizzle-orm'
 import { db } from '../../db/client.ts';
 import { courses } from '../../db/schema.ts';
 import { extractRole } from '../../services/utils.ts';
+import { checkUserRole } from '../hook/check-user-role.ts';
 
 export const coursesRoutePut: FastifyPluginAsyncZod = async (server) => {
   server.put('/courses/:id', {
@@ -63,16 +64,16 @@ export const coursesRoutePut: FastifyPluginAsyncZod = async (server) => {
         })
       }
     },
-    preValidation: [server.authenticate],
+    // preValidation: [server.authenticate],
   }, async (request, reply) => {
     try {
       // Verificar se o usuário tem permissão de instrutor
-      if (extractRole(request.user.role, request.user.id, request)) {
-        return reply.code(403).send({
-          error: 'Forbidden',
-          message: 'Only instructors or admins can update courses'
-        });
-      }
+      // if (checkUserRole(request.user.role)) {
+      //   return reply.code(403).send({
+      //     error: 'Forbidden',
+      //     message: 'Only instructors or admins can update courses'
+      //   });
+      // }
 
       const { id } = request.params;
       const updateData = request.body;
@@ -90,12 +91,12 @@ export const coursesRoutePut: FastifyPluginAsyncZod = async (server) => {
       }
 
       // Verificar se o usuário é o criador do curso (a menos que seja admin)
-      if (extractRole(request.user.role, existingCourse.teachersId, request)) {
-        return reply.code(403).send({
-          error: 'Forbidden',
-          message: 'You can only update courses that you created'
-        });
-      }
+      // if (checkUserRole(request.user.role)) {
+      //   return reply.code(403).send({
+      //     error: 'Forbidden',
+      //     message: 'You can only update courses that you created'
+      //   });
+      // }
 
       // Verificar duplicidade de título se o título está sendo atualizado
       if (updateData.title && updateData.title !== existingCourse.title) {

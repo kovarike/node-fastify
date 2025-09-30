@@ -14,7 +14,7 @@ export async function isValidHashPassword(password: string, hash: string) {
 export const currentSecret = randomBytes(32).toString('hex');
 
 
-export function extractRole(requestRole: string, Id: string | null, requestLog?: FastifyRequest): boolean {
+export function extractRole(requestRole: string, Id: string | null, requestLog: FastifyRequest): boolean {
 
   const regex1 = [
     /teacher:([0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})/i,
@@ -67,8 +67,19 @@ export function extractRole(requestRole: string, Id: string | null, requestLog?:
       }
     }
   } catch (error) {
-    requestLog?.log.error(`Error in the permission check: ${error}`);
+    requestLog.log.error(`Error in the permission check: ${error}`);
   }
   
   return false;
+}
+
+
+export function getAuthenticatedUserFromRequest(request: FastifyRequest) {
+  const user = request.user
+
+  if (!user) {
+    throw new Error('Invalid authentication')
+  }
+
+  return user
 }

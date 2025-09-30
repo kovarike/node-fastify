@@ -4,6 +4,7 @@ import { count, eq} from 'drizzle-orm'
 import { db } from '../../db/client.ts';
 import { courses, classes} from '../../db/schema.ts';
 import { extractRole } from '../../services/utils.ts';
+import { checkUserRole } from '../hook/check-user-role.ts';
 
 export const coursesRouteDelete: FastifyPluginAsyncZod = async (server) => {
   server.delete('/courses/:id', {
@@ -43,16 +44,16 @@ export const coursesRouteDelete: FastifyPluginAsyncZod = async (server) => {
         })
       }
     },
-    preValidation: [server.authenticate],
+    // preValidation: [server.authenticate],
   }, async (request, reply) => {
     try {
       // Verificar se o usuário tem permissão de instrutor
-      if (extractRole(request.user.role, request.user.id, request)) {
-        return reply.code(403).send({
-          error: 'Forbidden',
-          message: 'Only instructors or admins can delete courses'
-        });
-      }
+      // if (checkUserRole(request.user.role)) {
+      //   return reply.code(403).send({
+      //     error: 'Forbidden',
+      //     message: 'Only instructors or admins can delete courses'
+      //   });
+      // }
 
       const { id } = request.params;
 
@@ -69,12 +70,12 @@ export const coursesRouteDelete: FastifyPluginAsyncZod = async (server) => {
       }
 
       // Verificar se o usuário é o criador do curso (a menos que seja admin)
-      if (extractRole(request.user.role, course.teachersId, request)) {
-        return reply.code(403).send({
-          error: 'Forbidden',
-          message: 'You can only delete courses that you created'
-        });
-      }
+      // if (checkUserRole(request.user.role)) {
+      //   return reply.code(403).send({
+      //     error: 'Forbidden',
+      //     message: 'You can only delete courses that you created'
+      //   });
+      // }
 
       // Verificar se há matrículas no curso antes de excluir
       const [enrollmentCount] = await db.select({ count: count() })

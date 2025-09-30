@@ -4,6 +4,7 @@ import { count, eq } from 'drizzle-orm'
 import { db } from '../../db/client.ts';
 import { teachers, courses, classes} from '../../db/schema.ts';
 import { extractRole } from '../../services/utils.ts';
+import { checkUserRole } from '../hook/check-user-role.ts';
 
 export const teachersRouteDelete: FastifyPluginAsyncZod = async (server) => {
   server.delete('/teachers/:id', {
@@ -44,17 +45,17 @@ export const teachersRouteDelete: FastifyPluginAsyncZod = async (server) => {
         })
       }
     },
-    preValidation: [server.authenticate],
+    // preValidation: [server.authenticate],
   }, async (request, reply) => {
     try {
       // Check if user has permission to delete teachers
       // This should probably be restricted to admins only
-      if (extractRole(request.user.role, request.user.id, request)) {
-        return reply.code(403).send({
-          error: 'Forbidden',
-          message: 'Only admins can delete teachers'
-        });
-      }
+      // if (checkUserRole(request.user.role)) {
+      //   return reply.code(403).send({
+      //     error: 'Forbidden',
+      //     message: 'Only admins can delete teachers'
+      //   });
+      // }
 
       const { id } = request.params;
 

@@ -4,6 +4,7 @@ import { and, ne, eq, } from 'drizzle-orm'
 import { db } from '../../db/client.ts';
 import { teachers } from '../../db/schema.ts';
 import { extractRole, hashPassword } from '../../services/utils.ts';
+import { checkUserRole } from '../hook/check-user-role.ts';
 
 export const teachersRoutePut: FastifyPluginAsyncZod = async (server) => {
   server.put('/teachers/:id', {
@@ -23,6 +24,9 @@ export const teachersRoutePut: FastifyPluginAsyncZod = async (server) => {
         password: z.string()
           .optional()
           .describe('Password of the Teacher'),
+        role: z.enum(['teacher', 'admin'])
+          .optional()
+          .describe('Role of the user - only admins can change roles'),
       }).partial().describe('Request body for updating a Teacher'),
       response: {
         200: z.object({
@@ -60,17 +64,17 @@ export const teachersRoutePut: FastifyPluginAsyncZod = async (server) => {
         })
       }
     },
-    preValidation: [server.authenticate],
+    // preValidation: [server.authenticate],
   }, async (request, reply) => {
     try {
       // Check if user has permission to update teachers
       // Only admins should be able to update teachers
-      if (extractRole(request.user.role, request.user.id, request)) {
-        return reply.code(403).send({
-          error: 'Forbidden',
-          message: 'Only admins can update teachers'
-        });
-      }
+      // if (checkUserRole(request.user.role)) {
+      //   return reply.code(403).send({
+      //     error: 'Forbidden',
+      //     message: 'Only admins can update teachers'
+      //   });
+      // }
 
       const { id } = request.params;
       const updateData = request.body;
@@ -106,7 +110,7 @@ export const teachersRoutePut: FastifyPluginAsyncZod = async (server) => {
       }
 
       // Prepare data for update
-      const updatePayload: any = { ...updateData };
+      const updatePayload = { ...updateData };
       
       // Hash password if provided
       if (updateData.password) {

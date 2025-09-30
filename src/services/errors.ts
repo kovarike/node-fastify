@@ -2,11 +2,12 @@ import { type FastifyReply, type FastifyRequest } from 'fastify'
 import { type FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import { ZodError } from 'zod';
 import crypto from 'crypto';
+import { env } from './env.ts';
 
 export const errors: FastifyPluginAsyncZod = async (server) => {
   // Error handler: retorno padronizado, sem vazar stack em produção, logs estruturados
   server.setErrorHandler((error: any, request: FastifyRequest, reply: FastifyReply) => {
-    const isProd = process.env.NODE_ENV === 'production';
+    const isProd = env.NODE_ENV === 'production';
     const requestId = (request as any).requestId || request.headers['x-request-id'] || crypto.randomUUID();
     const statusCode = error.statusCode ?? 500;
 

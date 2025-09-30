@@ -3,26 +3,35 @@ import z from 'zod';
 import { db } from '../../db/client.ts';
 import { teachers } from '../../db/schema.ts';
 import { eq } from 'drizzle-orm';
-import { extractRole, hashPassword } from '../../services/utils.ts';
+import { hashPassword } from '../../services/utils.ts';
 
-export const coursesRoutePost: FastifyPluginAsyncZod = async (server) => {
+export const teachersRoutePost: FastifyPluginAsyncZod = async (server) => {
   server.post('/teachers', {
     schema: {
       tags: ['teachers'],
       summary: 'Create a new Teacher',
-      description: 'Endpoint to create a new Teacher with required fields. Requires authentication and instructor role.',
+      description: 'Endpoint to create a new Teacher with required fields. Requires authentication and admin role.',
       security: [{ bearerAuth: [] }],
       body: z.object({
         name: z.string()
+          .min(2, { message: 'Name must be at least 2 characters long' })
+          .max(100, { message: 'Name must be at most 100 characters long' })
           .describe('Name of the Teacher'),
-        email: z.string()
+        email: z.email({ message: 'Invalid email format' })
           .describe('Email of the Teacher'),
         password: z.string()
-          .describe('password of the Teacher'),
+          .min(6, { message: 'Password must be at least 6 characters long' })
+          .describe('Password of the Teacher'),
       }).describe('Request body for creating a new Teacher'),
       response: {
         201: z.object({
-          message: z.string()
+          message: z.string(),
+          teacher: z.object({
+            id: z.uuid(),
+            name: z.string(),
+            email: z.string(),
+            role: z.string()
+          })
         }),
         400: z.object({
           error: z.string(),
@@ -46,52 +55,49 @@ export const coursesRoutePost: FastifyPluginAsyncZod = async (server) => {
         })
       }
     },
-    preValidation: [server.authenticate],
   }, async (request, reply) => {
     try {
-      // Verificar se o usuário tem permissão de instrutor
-      if (extractRole(request.user.role, request.user.id, request)) {
-        return reply.code(403).send({
-          error: 'Forbidden',
-          message: 'Only instructors or admins can create Teacher'
-        });
-      }
 
       const { email, name, password } = request.body;
 
-      // Verificação de duplicidade
+      // Check for duplicate email
       const [existingTeacher] = await db.select()
         .from(teachers)
-        .where(eq(teachers.email, email)).limit(1);
+        .where(eq(teachers.email, email))
+        .limit(1);
 
       if (existingTeacher) {
         return reply.code(409).send({
-          error: 'Teacher with this title already exists',
-          suggestedAction: 'Use a different email or update the existing Teacher'
+          error: 'Teacher with this email already exists',
+          suggestedAction: 'Use a different email or update the existing teacher'
         });
       }
 
+      // Hash the password
       const passwordHash = await hashPassword(password);
+      
+      // Create the teacher
       const result = await db.insert(teachers).values({
         name,
         email,
         password: passwordHash
-      }).returning();
+      }).returning({
+        id: teachers.id,
+        name: teachers.name,
+        email: teachers.email,
+        role: teachers.role
+      });
 
-      request.log.info(`Teacher created: ${result[0].id}`);
+      const newTeacher = result[0];
+
+      request.log.info(`Teacher created: ${newTeacher.id}`);
 
       return reply.code(201).send({
-        message: 'Teacher successfully created'
+        message: 'Teacher successfully created',
+        teacher: newTeacher
       });
 
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return reply.code(400).send({
-          error: 'Validation failed',
-          details: error.message
-        });
-      }
-
       request.log.error(`Error creating teacher: ${error}`);
 
       return reply.code(500).send({

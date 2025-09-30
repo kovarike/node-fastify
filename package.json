@@ -3,28 +3,28 @@
   "version": "1.0.0",
   "main": "server.ts",
   "scripts": {
+    "deploy": "sudo docker compose up -d && node --env-file .env --watch ./src/server.ts && npm run db:generate && npm run db:migrate",
     "dev": "sudo docker compose up -d && npm run start:server",
-    "start:server": "node --env-file .env --watch ./src/server.ts",
-    "build": "rollup --config --bundleConfigAsCjs",
-    "watch": "rollup -c -w",
-    "db:seed": "node --env-file .env ./src/db/seed.ts",
+    "start:server": "node --env-file .env.example --watch ./src/server.ts",
+    "db:seed": "node --env-file .env.example ./src/db/seed.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "test": "vitest run"
+    "test": "dotenv -e .env.test -- vitest run",
+    "pretest:dev": "npx tsx scripts/generate-test.ts && npm run test",
+    "presupertest:dev": "npx tsx scripts/generate-supertests.ts --force --only=routes && npm run test",
+    "audit": "npx tsx scripts/check-routes.ts"
   },
   "type": "module",
   "dependencies": {
     "@faker-js/faker": "^10.0.0",
     "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^11.1.0",
-    "@fastify/helmet": "^13.0.1",
+    "@fastify/helmet": "^13.0.2",
     "@fastify/jwt": "^10.0.0",
     "@fastify/rate-limit": "^10.3.0",
     "@fastify/static": "^8.2.0",
     "@fastify/swagger": "^9.5.1",
-    "@fastify/swagger-ui": "^5.2.3",
-    "@rollup/plugin-terser": "^0.4.4",
     "@scalar/fastify-api-reference": "^1.34.6",
     "bcrypt": "^6.0.0",
     "drizzle-orm": "^0.44.5",
@@ -33,27 +33,24 @@
     "fastify-type-provider-zod": "^6.0.0",
     "pg": "^8.16.3",
     "pino-pretty": "^13.1.1",
-    "tsx": "^4.20.5",
     "uuidv7": "^1.0.2",
     "zod": "^4.1.5"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^28.0.6",
-    "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^16.0.1",
-    "@rollup/plugin-typescript": "^12.1.4",
-<<<<<<< HEAD
     "@types/bcrypt": "^6.0.0",
-=======
->>>>>>> main
-    "@types/node": "^24.3.1",
+    "@types/node": "^24.6.0",
     "@types/supertest": "^6.0.3",
+    "@types/yargs": "^17.0.33",
+    "chalk": "^5.6.2",
+    "dotenv-cli": "^10.0.0",
     "drizzle-kit": "^0.31.4",
-    "glob": "^11.0.3",
-    "rollup": "^4.50.1",
+    "fast-glob": "^3.3.3",
     "supertest": "^7.1.4",
+    "ts-morph": "^27.0.0",
     "tslib": "^2.8.1",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "yargs": "^18.0.0"
   }
 }

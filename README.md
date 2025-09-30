@@ -246,9 +246,7 @@ Detected services (under `src/services/`):
 
 ---
 
-## Diagrams (Mermaid)
-
-See `docs/diagrams.md` for sequence and component diagrams. Example snippets (also included in `docs/diagrams.md`):
+## Diagrams 
 
 Sequence (Login):
 
@@ -257,33 +255,9 @@ sequenceDiagram
   participant Client
   participant API
   participant DB
-  Client->>API: POST /auth/login (email,password)
+  Client->>API: POST /auth (email,password)
   API->>DB: SELECT user by email
   DB-->>API: user row
   API->>API: sign JWT
   API-->>Client: 200 OK + Set-Cookie / body { token }
-```
-
-Auth flow (flowchart):
-
-```mermaid
-flowchart TD
-  U[User] --> A[POST /auth/login]
-  A --> B[Validate payload (Zod)]
-  B --> C[DB: verify user & password]
-  C --> D{success?}
-  D -- yes --> E[sign JWT & set cookie]
-  D -- no --> F[401 Unauthorized]
-  E --> U
-```
-
-Component diagram:
-
-```mermaid
-graph LR
-  C[Client] --> S[Fastify Server]
-  S --> M[Middleware (auth, cors, helmet, rate-limit)]
-  S --> R[Routers / Plugins]
-  R --> SV[Services (utils, enrollments, errors)]
-  SV --> DB[Postgres / Drizzle ORM]
 ```

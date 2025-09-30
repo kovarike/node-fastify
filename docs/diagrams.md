@@ -17,38 +17,3 @@ sequenceDiagram
   API->>API: verify password
   API->>API: sign JWT
   API-->>Client: 200 OK + Set-Cookie / body { token }
-
-
-## Auth Flow (flowchart)
-
-flowchart TD
-  U[User] --> A[POST /auth/login]
-  A --> B[Validate payload (Zod)]
-  B --> C[DB: verify user & password]
-  C --> D{Valid?}
-  D -- yes --> E[sign JWT & set cookie]
-  D -- no --> F[401 Unauthorized]
-  E --> U
-
-
-## Component Diagram
-
-graph LR
-  Client[Client/browser] --> API[Fastify server]
-  API --> Plugins["@fastify/jwt, @fastify/cookie, helmet, cors, rate-limit"]
-  API --> Routers["src/routers/* (routes)"]
-  Routers --> Services["src/services/* (utils, errors, middleware)"]
-  Services --> DB[Postgres (Drizzle ORM)]
-  Plugins --> AuthService["JWT handling"]
-
-## CRUD Flow Example (POST /courses)
-
-flowchart LR
-  Client --> POST_COURSES[POST /courses]
-  POST_COURSES --> Auth[authenticate middleware]
-  Auth --> Validate[Zod validation]
-  Validate --> Service["courses service"]
-  Service --> DB[courses table insert]
-  DB --> Service
-  Service --> Response[201 Created]
-  Response --> Client
